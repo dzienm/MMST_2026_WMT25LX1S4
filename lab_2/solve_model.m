@@ -2,12 +2,13 @@ function [t, x] = solve_model(A, x0, t_span, n)
     % solve_model - Ścisłe rozwiązanie liniowego układu równań x' = Ax
     %
     % Argumenty:
-    % A      - macierz układu (2x2)
+    % A      - macierz układu
     % x0     - wektor warunków początkowych [x1_0; x2_0]
     % t_span - zakres czasu symulacji, np. [0, 10]
-    % n      - stopień dyskretyzacji
+    % n      - stopień dyskretyzacji (liczba punktów na osi czasu w
+    % przedziale wyznaczonym przez wketor t_span
 
-    % Wygenerowanie wektora czasu (1000 punktów dla gładkiego wykresu)
+    % Wygenerowanie wektora czasu (n punktów dla gładkiego wykresu)
     t = linspace(t_span(1), t_span(2), n);
     
     % Inicjalizacja macierzy na wyniki
