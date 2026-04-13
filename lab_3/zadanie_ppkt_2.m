@@ -1,8 +1,12 @@
 % Skrypt z przykładem
 clear; clc; close all;
 
+m=1;
+k=4;
+c=-0.5;
+
 % --- 1. PARAMETRY MODELU ---
-A = [0 1;-1 0];
+A = [-c/m -k/m; 1 0];
 t_span = [0, 10];
 n_points = 1000; 
 
