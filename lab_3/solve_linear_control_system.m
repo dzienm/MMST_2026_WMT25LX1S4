@@ -61,34 +61,31 @@ function x = solve_linear_control_system(A, B, x0, u, t)
     end
 
     x = zeros(N, n);
+    [du1, du2] = size(u);
+    calka_narastajaca = zeros(n, 1);
 
     % x(t_1) = x(0) = x0, zakladamy zwykle t(1)=0
     % ale ponizszy kod zadziala tez dla innego t(1)
-    for k = 1:N
-        tk = t(k);
-
-        % pierwszy skladnik: exp(A tk) x0
-        Phi_k = expm(A * tk);
-
-        % drugi skladnik: exp(A tk) * suma_j exp(-A tj) B u_j dt_j
-        suma = zeros(n, 1);
-
-        for j = 1:(k-1)
-            tj = t(j);
-            dtj = t(j+1) - t(j);
+    % Stan dla pierwszej chwili
+    Phi = expm(A * t(1));
+    x(1, :) = (Phi * (x0 + calka_narastajaca)).';
 
 
-            [du1, du2] = size(u);
-            if min(du1,du2)==1
-                uj = u(j);
-            else
-                uj = u(j, :).';
-            end
-
-            suma = suma + expm(-A * tj) * B * uj * dtj;
+    for k = 2:N
+        %nowe
+        dt = t(k) - t(k-1);
+        if min(du1,du2)==1
+                uj = u(k);
+        else
+                uj = u(k, :).';
         end
 
-        x(k, :) = Phi_k * x0 + Phi_k * suma;
+        % Aktualizacja tylko o nowy fragment calki
+        calka_narastajaca = calka_narastajaca + expm(-A * t(k-1)) * B * uj * dt; % czy expm(-A * t(k)) czy expm(-A * t(k-1))
+
+        Phi = expm(A * t(k));
+        x(k, :) = (Phi * (x0 + calka_narastajaca)).';
+
     end
 
     x = x.';   % wynik jako (N x n)
