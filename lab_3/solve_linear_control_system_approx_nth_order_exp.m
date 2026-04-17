@@ -1,4 +1,4 @@
-function x = solve_linear_control_system(A, B, x0, u, t)
+function x = solve_linear_control_system_approx_nth_order_exp(A, B, x0, u, t, approx_order)
 % Rozwiazuje:
 %   x_dot = A*x + B*u
 %
@@ -7,7 +7,7 @@ function x = solve_linear_control_system(A, B, x0, u, t)
 %
 % gdzie:
 %   Phi_k   = expm(A*dt)
-%   Gamma_k = integral_0^dt expm(A*s) ds * B
+%   Gamma_k = integral_0^dt expm(A*s) ds * B \approx exp(0)*B*dt = B*dt
 %
 % Dla wejscia stalego na przedziale [t(k-1), t(k)].
 
@@ -56,28 +56,19 @@ function x = solve_linear_control_system(A, B, x0, u, t)
     x = zeros(N, n);
     x(1, :) = x0.';
 
-    I = eye(n);
-
     for k = 2:N
         dt = t(k) - t(k-1);
         Phi = expm(A * dt);
-
-        % Dokladne Gamma przez macierz blokowa
-        M = [A, B; zeros(m, n+m)];
-        EM = expm(M * dt);
-
-        Phi2 = EM(1:n, 1:n);
-        Gamma = EM(1:n, n+1:n+m);
-
-        % Phi2 powinno byc zgodne z Phi; bierzemy Gamma z tej samej eksp.
+        Gamma = matrix_series_approx(A, dt, approx_order);
+        
         if m == 1
             ukm1 = u(k-1);
         else
             ukm1 = u(k-1, :).';
         end
-
+        
         x_prev = x(k-1, :).';
-        x_curr = Phi2 * x_prev + Gamma * ukm1;
+        x_curr = Phi * x_prev + Phi *Gamma * B* ukm1;
         x(k, :) = x_curr.';
     end
 end

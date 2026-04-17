@@ -14,7 +14,7 @@ u(:)=F/m;
 
 x = solve_linear_control_system(A, B, x0, u, t);
 
-
+x=x';
 %sprawdzamy wynik
 plot(t,x(2,:)) %wykres predkosci
 hold on
