@@ -2,7 +2,7 @@
 modelName = 'model_RC_filtr_simscape'; % WPISZ TUTAJ NAZWĘ SWOJEGO PLIKU .slx (bez rozszerzenia)
 
 % Zdefiniuj wektor częstotliwości (np. od 1 Hz do 100 kHz, skala logarytmiczna)
-f_vec = logspace(0, 5, 50); 
+f_vec = logspace(0, 4, 30); % Od 1 Hz do 10 kHz
 A_out = zeros(size(f_vec)); % Prealokacja wektora na wyniki
 A_in = 1; % Zakładamy amplitudę wejściową 1 V. Jeśli jest inna, zmień tę wartość.
 
